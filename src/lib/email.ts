@@ -1,7 +1,7 @@
 import { Resend } from 'resend';
 import { sendEmail as sendMailjet } from './mailjet';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || 're_123');
 const FROM_EMAIL = process.env.MAILJET_SENDER_EMAIL || 'noreply@resend.dev';
 const FROM_NAME = 'Sistem Informasi Sekolah';
 
