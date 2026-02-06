@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { resetPassword } from '@/actions/auth'
@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { GraduationCap, Loader2, Lock, Eye, EyeOff, AlertTriangle, CheckCircle2 } from 'lucide-react'
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [checkingSession, setCheckingSession] = useState(true)
@@ -112,7 +112,7 @@ export default function ResetPasswordPage() {
     if (result?.error) {
       // Provide user-friendly error messages
       if (result.error.includes('session')) {
-        setError('Sesi tidak valid atau sudah kedaluwarsa. Silakan minta link reset password baru.')
+        setError('Sesi tidak valid atau sudah kedaluwatan. Silakan minta link reset password baru.')
       } else {
         setError(result.error)
       }
@@ -287,5 +287,24 @@ export default function ResetPasswordPage() {
         </CardFooter>
       </form>
     </Card>
+  )
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <Card className="shadow-xl border-0">
+        <CardHeader className="space-y-4 text-center pb-8">
+          <div className="mx-auto w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center">
+            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+          </div>
+          <div>
+            <CardTitle className="text-2xl font-bold">Memuat...</CardTitle>
+          </div>
+        </CardHeader>
+      </Card>
+    }>
+      <ResetPasswordForm />
+    </Suspense>
   )
 }
