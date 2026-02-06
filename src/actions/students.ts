@@ -17,7 +17,7 @@ export async function getStudents(status?: string) {
   const supabase = await createClient()
   let query = supabase
     .from('students')
-    .select('id, school_id, full_name, nisn, nis, gender, photo_url, status, admission_year, enrollment_type, created_at, updated_at')
+    .select('*')
     .eq('school_id', user.school_id)
   
   if (status) {

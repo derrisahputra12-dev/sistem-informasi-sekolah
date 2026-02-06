@@ -25,7 +25,10 @@ export async function getStaff() {
     .eq('school_id', user.school_id)
     .order('full_name', { ascending: true })
 
-  return data || []
+  return (data || []).map((item: any) => ({
+    ...item,
+    positions: Array.isArray(item.positions) ? item.positions[0] : item.positions,
+  }))
 }
 
 export async function getStaffMember(id: string) {
@@ -179,7 +182,7 @@ export async function getLetters() {
   const supabase = await createClient()
   const { data } = await supabase
     .from('letters')
-    .select('id, letter_number, type, subject, sender, recipient, date, status, file_url')
+    .select('*')
     .eq('school_id', user.school_id)
     .order('date', { ascending: false })
 

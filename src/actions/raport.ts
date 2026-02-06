@@ -30,7 +30,11 @@ export async function getStudentGrades(
     .eq('semester', semester)
     .order('subjects(name)', { ascending: true })
 
-  return data || []
+  return (data || []).map((item: any) => ({
+    ...item,
+    subjects: Array.isArray(item.subjects) ? item.subjects[0] : item.subjects,
+    competency_types: Array.isArray(item.competency_types) ? item.competency_types[0] : item.competency_types,
+  }))
 }
 
 export async function getClassGrades(
@@ -150,7 +154,7 @@ export async function getReportCards(classGroupId: string, academicYearId: strin
   if (!user) return []
 
   const supabase = await createClient()
-  const { data } = await supabase
+  const query = supabase
     .from('report_cards')
     .select(`
       id, semester, status,
@@ -163,7 +167,12 @@ export async function getReportCards(classGroupId: string, academicYearId: strin
     .eq('semester', semester)
     .order('students(full_name)', { ascending: true })
 
-  return data || []
+  const { data } = await query
+  return (data || []).map((item: any) => ({
+    ...item,
+    students: Array.isArray(item.students) ? item.students[0] : item.students,
+    class_groups: Array.isArray(item.class_groups) ? item.class_groups[0] : item.class_groups,
+  }))
 }
 
 export async function getReportCard(
@@ -262,7 +271,7 @@ export async function getExtracurriculars() {
   if (!user) return []
 
   const supabase = await createClient()
-  const { data } = await supabase
+  const query = supabase
     .from('extracurriculars')
     .select(`
       id, name, description, coach_id, schedule,
@@ -271,7 +280,11 @@ export async function getExtracurriculars() {
     .eq('school_id', user.school_id)
     .order('name', { ascending: true })
 
-  return data || []
+  const { data } = await query
+  return (data || []).map((item: any) => ({
+    ...item,
+    staff: Array.isArray(item.staff) ? item.staff[0] : item.staff,
+  }))
 }
 
 export async function createExtracurricular(formData: FormData) {

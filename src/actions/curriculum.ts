@@ -29,7 +29,12 @@ export async function getClassGroups(academicYearId?: string) {
   }
 
   const { data } = await query
-  return data || []
+  return (data || []).map((item: any) => ({
+    ...item,
+    staff: Array.isArray(item.staff) ? item.staff[0] : item.staff,
+    grade_levels: Array.isArray(item.grade_levels) ? item.grade_levels[0] : item.grade_levels,
+    academic_years: Array.isArray(item.academic_years) ? item.academic_years[0] : item.academic_years,
+  }))
 }
 
 export async function getClassGroup(id: string) {
@@ -155,7 +160,12 @@ export async function getTeachingAssignments(academicYearId?: string) {
   }
 
   const { data } = await query
-  return data || []
+  return (data || []).map((item: any) => ({
+    ...item,
+    staff: Array.isArray(item.staff) ? item.staff[0] : item.staff,
+    subjects: Array.isArray(item.subjects) ? item.subjects[0] : item.subjects,
+    class_groups: Array.isArray(item.class_groups) ? item.class_groups[0] : item.class_groups,
+  }))
 }
 
 export async function createTeachingAssignment(formData: FormData) {
@@ -224,7 +234,31 @@ export async function getSchedules(classGroupId?: string) {
   }
 
   const { data } = await query
-  return data || []
+  return (data || []).map((item: any) => ({
+    ...item,
+    teaching_assignments: Array.isArray(item.teaching_assignments) 
+      ? item.teaching_assignments[0] 
+      : item.teaching_assignments,
+  })).map((item: any) => {
+    if (item.teaching_assignments) {
+      return {
+        ...item,
+        teaching_assignments: {
+          ...item.teaching_assignments,
+          subjects: Array.isArray(item.teaching_assignments.subjects) 
+            ? item.teaching_assignments.subjects[0] 
+            : item.teaching_assignments.subjects,
+          staff: Array.isArray(item.teaching_assignments.staff) 
+            ? item.teaching_assignments.staff[0] 
+            : item.teaching_assignments.staff,
+          class_groups: Array.isArray(item.teaching_assignments.class_groups) 
+            ? item.teaching_assignments.class_groups[0] 
+            : item.teaching_assignments.class_groups,
+        }
+      }
+    }
+    return item
+  })
 }
 
 export async function createSchedule(formData: FormData) {
