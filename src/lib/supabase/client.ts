@@ -5,10 +5,12 @@ export function createClient() {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   // During build time on Vercel, these might be missing. 
-  // We provide fallbacks to prevent the build from crashing.
+  // We provide placeholder values that look like valid strings 
+  // to prevent the library from throwing a "Project URL is required" error.
   return createBrowserClient(
-    supabaseUrl || '',
-    supabaseAnonKey || ''
+    supabaseUrl || 'https://placeholder.supabase.co',
+    supabaseAnonKey || 'placeholder'
   )
 }
+
 
